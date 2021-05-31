@@ -1,0 +1,60 @@
+html,body{
+  overflow: hidden;
+  background-color: #212c55;
+  
+  background-image: url("Fondo");
+  background-repeat: repeat-y;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.main{
+  max-height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory; 
+  position: relative; 
+}
+
+.graphs{
+  height: 100vh;
+  scroll-snap-align: start;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+#barchart{
+ display: grid;
+  align-items: center;
+}
+
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+
+h1, h3{
+  text-align: center;
+  color:white;
+}
+
+label{
+  color:white;
+}
+
+#univ,#carr,#area,#mainm,#salle,#topcarrera,#bar,#prgnogto,#uninogto{
+  margin-right: auto;
+  margin-left:auto;
+}
+#sun,#top5,#wordcloud {
+  position: relative;
+  right: 5%;
+}
+
+#inicio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
