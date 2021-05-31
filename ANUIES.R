@@ -123,23 +123,27 @@ Map_Areas <- function(){
 }
 
 sun <- function(M){
-   
+  
   areas <- ANUIES %>% filter(NOMBREMUN == M) %>% select(CAMPO.AMPLIO,Carrera,NI) %>% 
     group_by(CAMPO.AMPLIO) %>% summarise(value = sum(NI))
   top <- as.data.frame(cbind("label" = areas$CAMPO.AMPLIO, "parents" = "",
                              "value" = areas$value))
-  
-  bottom <- ANUIES %>% filter(NOMBREMUN == M) %>% select(CAMPO.AMPLIO,Carrera,NI) %>% 
-    group_by(CAMPO.AMPLIO,Carrera) %>% summarise(value = sum(NI)) %>% 
-    rename("parents" = "CAMPO.AMPLIO","label" = "Carrera")
-  datos <- rbind(top,bottom)
-  
-  plot_ly(data = datos, type = "sunburst", labels = ~label,
-          parents = ~parents,values = ~value, branchvalues = 'total',
-          insidetextorientation='radial') %>% 
-    layout(title = list(text = M, font = list(color = "white")),plot_bgcolor= rgb(33,44,85,alpha = 200, max = 255),
-           paper_bgcolor = rgb(33,44,85, alpha = 200, max = 255)) %>% 
-    config(displayModeBar = F,displaylogo = F)
+  if(nrow(areas) == 0){
+    return()
+  }
+  else{
+    bottom <- ANUIES %>% filter(NOMBREMUN == M) %>% select(CAMPO.AMPLIO,Carrera,NI) %>% 
+      group_by(CAMPO.AMPLIO,Carrera) %>% summarise(value = sum(NI)) %>% 
+      rename("parents" = "CAMPO.AMPLIO","label" = "Carrera")
+    datos <- rbind(top,bottom)
+    
+    plot_ly(data = datos, type = "sunburst", labels = ~label,
+            parents = ~parents,values = ~value, branchvalues = 'total',
+            insidetextorientation='radial') %>% 
+      layout(title = list(text = M, font = list(color = "white")),plot_bgcolor= rgb(33,44,85,alpha = 200, max = 255),
+             paper_bgcolor = rgb(33,44,85, alpha = 200, max = 255)) %>% 
+      config(displayModeBar = F,displaylogo = F)
+  }
 }
 
 
