@@ -16,19 +16,19 @@ library(highcharter)
 
 # Datos ---- 
 
-municipios <- read_sf(".\\Presentación\\SHAPEFILE\\areas_geoestadisticas_municipales.shp") %>% 
+municipios <- read_sf("./SHAPEFILE/areas_geoestadisticas_municipales.shp") %>% 
   filter(CVE_ENT == 11) %>% mutate(NOM_MUN = toupper(NOM_MUN)) %>% 
   st_transform("+init=epsg:4326")
 
 
-otros_mun <- read_sf(".\\Presentación\\SHAPEFILE\\areas_geoestadisticas_estatales.shp") %>% 
+otros_mun <- read_sf("./SHAPEFILE/areas_geoestadisticas_estatales.shp") %>% 
 filter(CVE_ENT %in% c("11","14","24","22","16","01","32"))  %>% 
   st_transform("+init=epsg:4326")
 
-ANUIES <- read.xlsx(".\\Presentación\\Datos\\ANUIES.xlsx") %>%  
+ANUIES <- read.xlsx("./Datos/ANUIES.xlsx") %>%  
   filter(ENTIDAD == "GUANAJUATO", CICLO == "2019-2020")
 
-OANU <- read.xlsx(".\\Presentación\\Datos\\ANUIES.xlsx") %>%  
+OANU <- read.xlsx("./Datos/ANUIES.xlsx") %>%  
   filter(ENTIDAD %in% c("SAN LUIS POTOSÍ","JALISCO","AGUASCALIENTES","MICHOACÁN","QUERÉTARO","ZACATECAS","GUANAJUATO"), CICLO == "2019-2020") %>% 
   mutate(CVE_ENT = ifelse(ENTIDAD == "SAN LUIS POTOSÍ","24",
                    ifelse(ENTIDAD == "JALISCO","14",
@@ -37,16 +37,16 @@ OANU <- read.xlsx(".\\Presentación\\Datos\\ANUIES.xlsx") %>%
                    ifelse(ENTIDAD == "QUERÉTARO", "22",
                    ifelse(ENTIDAD == "GUANAJUATO","11","32")))))))
 
-TOP25 <- read.csv(".\\Presentación\\Datos\\TopUniversidades.csv")
+TOP25 <- read.csv("./Datos/TopUniversidades.csv")
 
-addResourcePath("icono",".\\Presentación\\Iconos\\LaSalleBlanco.png")
-addResourcePath("Fondo",".\\Presentación\\Iconos\\Puntos Salle2.png")
+addResourcePath("icono","./Iconos/LaSalleBlanco.png")
+addResourcePath("Fondo","./Iconos/Puntos Salle2.png")
 
 # Importanción de archivos ----
 
-source(".\\Presentación\\server.R", encoding= "UTF-8")
-source(".\\Presentación\\ANUIES.R", encoding= "UTF-8")
-source(".\\Presentación\\ui.R", encoding= "UTF-8")
+source("./server.R", encoding= "UTF-8")
+source("./ANUIES.R", encoding= "UTF-8")
+source("./ui.R", encoding= "UTF-8")
 
 # -----
 
