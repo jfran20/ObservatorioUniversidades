@@ -13,7 +13,7 @@ base_map <- leaflet(options = leafletOptions(minZoom = 8, maxZoom = 8,zoomContro
 a <- colorRampPalette(c("white","blue"))
 colors <- a(10)
 
-SalleMapIcon <- icons(iconUrl = ".\\ANUIES\\Iconos\\LaSalleBajio.png",
+SalleMapIcon <- icons(iconUrl = ".\\Presentación\\Iconos\\LaSalleBajio.png",
                       iconWidth = 40, iconHeight = 40,
                       iconAnchorX = 0, iconAnchorY = 0)
 
