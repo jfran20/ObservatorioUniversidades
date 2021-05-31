@@ -18,13 +18,14 @@ server <- function(input, output){
   output$topcarrera <- renderLeaflet({Map_carrera(input$top)})
   output$wordcloud <- renderHighchart({wordcarrera()})
   
-  output$bar <- renderPlotly({CarrerasNI()})
+  output$bar <- renderPlotly({CarrerasNI(input$agrupador,input$tipo2)})
   
   
   output$nogto <- renderLeaflet({
     switch(input$fuera,
            "Programas"= ProgramasNGTO(),
-           "Universidades" = UnisNGTO())
+           "Universidades" = UnisNGTO(),
+           "Áreas" = AreasNGTO())
     })
   output$top5  <- renderPlotly({OtrosNI(11)})
   observeEvent(input$nogto_shape_click,{

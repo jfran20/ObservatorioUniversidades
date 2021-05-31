@@ -8,7 +8,8 @@ carreras <- ANUIES %>% select(Carrera) %>%
   group_by(Carrera) %>% summarise(Veces = n()) %>% arrange(-Veces) %>% head(5)
 
 base_map <- leaflet(options = leafletOptions(minZoom = 8, maxZoom = 8,zoomControl = F, attributionControl = F,dragging = F)) %>% 
-  addTiles (urlTemplate = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png")
+addTiles (urlTemplate = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png")
+  # addTiles (urlTemplate = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png")
 
 a <- colorRampPalette(c("white","blue"))
 colors <- a(10)
@@ -60,7 +61,9 @@ Map_Uni <- function(){
                 layerId = ~NOM_MUN) %>% 
     addLabelOnlyMarkers(data = data, lng = coords$lng,lat = coords$lat,
                         label = ~main, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "darkblue"))) %>% 
     addLegend(pal = pal, values = data$main, opacity = 0.7, 
               title = "Univ",position = "bottomright")
   return(map)
@@ -84,7 +87,9 @@ Map_Carreras <- function(){
                 layerId = ~NOM_MUN) %>% 
     addLabelOnlyMarkers(data = data, lng = coords$lng,lat = coords$lat,
                         label = ~main, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "darkblue"))) %>% 
     addLegend(pal = pal, values = data$main, opacity = 0.7, 
               title = "Carreras",position = "bottomright")
   
@@ -108,12 +113,15 @@ Map_Areas <- function(){
                 layerId = ~NOM_MUN) %>% 
     addLabelOnlyMarkers(data = data, lng = coords$lng,lat = coords$lat,
                         label = ~main, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "darkblue"))) %>% 
     addLegend(pal = pal, values = data$main, opacity = 0.7, 
               title = "Áreas",position = "bottomright")
   
   return(map)
 }
+
 sun <- function(M){
    
   areas <- ANUIES %>% filter(NOMBREMUN == M) %>% select(CAMPO.AMPLIO,Carrera,NI) %>% 
@@ -129,7 +137,7 @@ sun <- function(M){
   plot_ly(data = datos, type = "sunburst", labels = ~label,
           parents = ~parents,values = ~value, branchvalues = 'total',
           insidetextorientation='radial') %>% 
-    layout(plot_bgcolor= rgb(33,44,85,alpha = 200, max = 255),
+    layout(title = list(text = M, font = list(color = "white")),plot_bgcolor= rgb(33,44,85,alpha = 200, max = 255),
            paper_bgcolor = rgb(33,44,85, alpha = 200, max = 255)) %>% 
     config(displayModeBar = F,displaylogo = F)
 }
@@ -150,7 +158,6 @@ SALLE <- function(carrera){
     "MEDICINA VETERINARIA Y ZOOTECNIA" = "(VETE)|(ZOO)",
     "DISEÑO AMBIENTAL Y DE ESPACIOS" = "(DISEÑO)? (ESPACIO)",
     "DISEÑO DE MODAS Y CALZADO" = "(DISEÑO)? (MOD)|(CALZ)",
-    "DISEÑO GRÁFICO" = "((GR[AÁ]FICO)|(ARTE[^(RO)])) (?!C)(?!(ESC.*)).*",
     "DISEÑO GRAFICO ESTRATEGICO" = "((GR[AÁ]FICO)|(ARTE[^(RO)])) (?!C)(?!(ESC.*)).*",
     "LENGUAS MODERNAS E INTERCULTURALIDAD" = "(LEN)",
     "ODONTOLOGÍA" = "(ODO)|(DENT)",
@@ -204,6 +211,7 @@ plot_map_salle <- function(programa){
     addCircleMarkers(data = dat, lng = ~LONG,lat = ~LAT, fillColor =  ~pal(ni),
                      opacity = 0, fillOpacity = 0.4,label = lapply(labels,HTML)) %>% 
     addMarkers(lng = -101.7212968, lat = 21.15665423, icon = SalleMapIcon) %>% 
+    addMarkers(lng = -101.2281982, lat = 20.55036291, icon = SalleMapIcon) %>% 
     addLabelOnlyMarkers(data = dat, lng = ~LONG,lat = ~LAT,
                         label = ~ni, labelOptions =
                           labelOptions(noHide = T, direction = 'center', textOnly = T)) %>%
@@ -228,7 +236,9 @@ Map_carrera <- function(c){
                 "<strong>Frec. del Prog.</strong> %d<p><strong>Ingreso:</strong> %d</p>",Veces,Ingreso)) %>%
     addLabelOnlyMarkers(data = map_data, lng = coords$lng,lat = coords$lat,
                         label = ~Ingreso, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "darkblue"))) %>% 
     addLegend("bottomright",pal = pal, values = map_data$Ingreso,title = "<p>Nuevo</p><p>Ingreso</p>") 
   
   return(map)
@@ -244,21 +254,48 @@ wordcarrera <- function(){
 }
 
 
-CarrerasNI <- function(){
-  datos <-
-    ANUIES %>% select(Carrera,NOMBREMUN,NI) %>% 
-    group_by(Carrera) %>% summarise(Ingreso = sum(NI)) %>%
-    arrange(-Ingreso) %>% head(8) %>% arrange(Ingreso)  
+CarrerasNI <- function(agrupador,tipo){
+  
+  if(agrupador == "Carrera"){
+    if(tipo == "Mejores"){
+      datos <-
+        ANUIES %>% select(Carrera,NI) %>% 
+        group_by(Carrera) %>% summarise(Ingreso = sum(NI)) %>%
+        arrange(-Ingreso) %>% head(8) %>% arrange(Ingreso)  
+    }
+    else{
+      datos <-
+        ANUIES %>% select(Carrera,NI) %>% filter(NI != 0) %>% 
+        group_by(Carrera) %>% summarise(Ingreso = sum(NI)) %>%
+        arrange(-Ingreso) %>% tail(8) %>% arrange(Ingreso) 
+    }
+  }
+  else{
+    if(tipo == "Mejores"){
+      datos <-
+      ANUIES %>% select(NI,CAMPO.DETALLADO) %>% 
+        group_by(CAMPO.DETALLADO) %>% summarise(Ingreso = sum(NI)) %>%
+        arrange(-Ingreso) %>% head(8) %>% arrange(Ingreso) %>% 
+        rename("Carrera" = "CAMPO.DETALLADO")
+    }
+    else{
+      datos <-
+        ANUIES %>% select(NI,CAMPO.DETALLADO) %>% filter(NI != 0) %>% 
+        group_by(CAMPO.DETALLADO) %>% summarise(Ingreso = sum(NI)) %>%
+        arrange(-Ingreso) %>% tail(8) %>% arrange(Ingreso) %>% 
+        rename("Carrera" = "CAMPO.DETALLADO")
+    }
+  }
+  
   
   plot_ly(datos, type = "bar", y = ~Carrera, x = ~Ingreso, color = I("#CE122D"),
-          hovertemplate = '<extra></extra>', orientation = 'h',text = ~Ingreso,
+          hovertemplate = '%{y}<extra></extra>', orientation = 'h',text = ~Ingreso,
           texttemplate = '%{text: .0f}',
           textposition = 'auto', textfont = list(color = 'white', size = 12)) %>% 
     layout(
       plot_bgcolor = rgb(33,44,85,alpha = 200, max = 255),
       paper_bgcolor = rgb(0,0,0,0),
-      title = list(text = "Top carreras con mayor ingreso", font = list(color = "white")),
-      yaxis = list(categoryarray = ~Carrera,categoryorder = "array", title = "", color = "white"),
+      yaxis = list(categoryarray = ~Carrera,categoryorder = "array", title = "", color = "white",showticklabels = F),
       xaxis = list(color = "white",showgrid = T, showline =  F, title = "", showticklabels = F)) %>% 
     config(displayModeBar = F,displaylogo = F)
 }
@@ -280,7 +317,9 @@ ProgramasNGTO <- function(){
                  label = ~sprintf("Programas: %d", Programas), layerId = ~CVE_ENT) %>%
     addLabelOnlyMarkers(data = map_data, lng = estcoords$lng,lat = estcoords$lat,
                         label = ~Programas, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "#CE122D"))) %>% 
     addLegend("bottomright",pal = pal, values = map_data$Programas, title = "Carreras")
   return(map)
 }
@@ -300,8 +339,30 @@ UnisNGTO <- function(){
                 label = ~paste("Universidades:", Universidades),layerId = ~CVE_ENT) %>%
     addLabelOnlyMarkers(data = map_data, lng = estcoords$lng,lat = estcoords$lat,
                         label = ~Universidades, labelOptions =
-                          labelOptions(noHide = T, direction = 'center', textOnly = T)) %>% 
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "#CE122D"))) %>% 
     addLegend("bottomright",pal = pal, values = map_data$Universidades, title = "Universidades")
+  return(map)
+}
+AreasNGTO <- function(){
+  data <- OANU %>% select(CVE_ENT,CAMPO.AMPLIO) %>% distinct() %>% 
+    group_by(CVE_ENT) %>% summarise(Áreas = n())
+  
+  map_data <- inner_join(otros_mun,data, by = c("CVE_ENT" = "CVE_ENT"))
+  
+  pal <- colorNumeric(colors, domain = map_data$Áreas,na.color = "black")
+  
+  map <- 
+    leaflet(options = leafletOptions(minZoom = 6, maxZoom = 6,zoomControl = F, attributionControl = F,dragging = F)) %>% 
+    addTiles (urlTemplate = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" ) %>% 
+    addPolygons(data = map_data, fillColor = ~pal(Áreas), weight = 1, color = "black",
+                label = ~paste("Universidades:", Áreas),layerId = ~CVE_ENT) %>%
+    addLabelOnlyMarkers(data = map_data, lng = estcoords$lng,lat = estcoords$lat,
+                        label = ~Áreas, labelOptions =
+                          labelOptions(noHide = T, direction = 'center', textOnly = T,
+                                       style = list("font-size" = "14px",
+                                                    "color" = "#CE122D")))
   return(map)
 }
 
