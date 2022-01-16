@@ -14,7 +14,7 @@ addTiles (urlTemplate = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_n
 a <- colorRampPalette(c("white","blue"))
 colors <- a(10)
 
-SalleMapIcon <- icons(iconUrl = ".\\Presentación\\Iconos\\LaSalleBajio.png",
+SalleMapIcon <- icons(iconUrl = "./www/Presentación/Iconos/LaSalleBajio.png",
                       iconWidth = 40, iconHeight = 40,
                       iconAnchorX = 0, iconAnchorY = 0)
 

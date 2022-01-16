@@ -1,6 +1,6 @@
 ui <- fluidPage(
   
-includeCSS(".\\Presentación\\style.css"),
+includeCSS("./www/style.css"),
 tags$div(class = "main",
    
    tags$section(class = "graphs",id = "inicio",
