@@ -1,17 +1,3 @@
-install.packages("sf")
-install.packages("ggplot2")
-install.packages("dplyr")
-install.packages("openxlsx")
-install.packages("leaflet")
-install.packages("leaflet.minicharts")
-install.packages("RColorBrewer")
-install.packages("plotly")
-install.packages("reactable")
-install.packages("shinycssloaders")
-install.packages("magrittr")
-install.packages("highcharter")
-
-
 library(sf)
 library(ggplot2)
 library(dplyr)
