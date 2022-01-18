@@ -1,8 +1,4 @@
 # Datos ---- 
-
-
-
-
 # source("ANUIES.R", encoding= "UTF-8")
 
 # Importanción de archivos ----

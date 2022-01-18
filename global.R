@@ -177,7 +177,7 @@ sun <- function(M){
     bottom <- ANUIES %>% filter(NOMBREMUN == M) %>% select(CAMPO.AMPLIO,Carrera,NI) %>% 
       group_by(CAMPO.AMPLIO,Carrera) %>% summarise(value = sum(NI)) %>% 
       rename("parents" = "CAMPO.AMPLIO","label" = "Carrera")
-    datos <- rbind(top,bottom)
+    datos <- as.data.frame(rbind(top,bottom))
     
     plot_ly(data = datos, type = "sunburst", labels = ~label,
             parents = ~parents,values = ~value, branchvalues = 'total',
